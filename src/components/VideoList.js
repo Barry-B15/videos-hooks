@@ -1,10 +1,11 @@
 import React from 'react'
 import VideoItem from "./VideoItem";
 
-const VideoList = ({ videos }) => {
+//  destructure onVideoSelect as a props
+const VideoList = ({ videos, onVideoSelect }) => {
     // map over the video list and assign values to a constant renderedList so we can use it later
     const renderedList = videos.map((video) => {
-        return <VideoItem video={video} />;
+        return <VideoItem key={video.id.videoId} onVideoSelect={onVideoSelect} video={video} />;
     })
     return ( 
     // <div> { videos.length } </div>

@@ -1,10 +1,12 @@
 import "./VideoItem.css"
 import React from 'react'
 
-const VideoItem = ({ video }) => {
+// destructure onVideoSelect
+const VideoItem = ({ video, onVideoSelect }) => {
     return ( 
-        <div className="video-item item"> 
-            <img className="image" src={video.snippet.thumbnails.medium.url } alt="youtube video" />
+        //add event listener and call onVideoSelect with video
+        <div onClick={() => onVideoSelect(video)} className="video-item item"> 
+            <img alt={video.snippet.title} className="image" src={video.snippet.thumbnails.medium.url } />
             <div className="content">
                 <div className="header">
                     { video.snippet.title }
