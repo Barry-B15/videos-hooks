@@ -10,6 +10,11 @@ class App extends React.Component {
     // add a new item selectedVideo to state and set it to null
     state = { videos : [], selectedVideo: null };
 
+    // create a component did mount to set a default search term to populate the app when first loaded
+    componentDidMount() {
+        this.onTermSubmit('beautiful japan')
+    }
+
     // create a callback to handle form submit
     // make it async by add async in from of term
     onTermSubmit = async (term) => {
@@ -23,7 +28,10 @@ class App extends React.Component {
         // console log the response
         console.log(response);
         // update the state
-        this.setState({ videos: response.data.items })
+        this.setState({ 
+            videos: response.data.items,
+            selectedVideo: response.data.items[0]
+         })
         
     };
     // add a callback that will fire when the user clicks a video
