@@ -1,72 +1,67 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchBar from './SearchBar'
 import VideoList from './VideoList'
 import VideoDetail from './VideoDetail'
 import youtube from '../apis/youtube'
 
+// 2. Declare a new App func
+const App = () => {
+    // 3. Declare 2 pieces of state corresponding to the params in the old App state {video:[], selectedVideo:null}
+    const [videos, setVideos] = useState([]);
+    const [selectedVideo, setSelectedVideo] = useState(null);
 
-class App extends React.Component {
-    // init the state
-    // add a new item selectedVideo to state and set it to null
-    state = { videos : [], selectedVideo: null };
+    // 4 declare a useEffect with an empty array as this func will run only once when the app 1st loads. Then cut n paste the content of componentDidMount. Note useEffect n componentDidMount are equivalent. they handle our app life cycle. make sure to remove this. in front of ontermSubmit
+    useEffect(() => {
+        onTermSubmit('beautiful japan')
+    }, []);
 
-    // create a component did mount to set a default search term to populate the app when first loaded
-    componentDidMount() {
-        this.onTermSubmit('beautiful japan')
-    }
-
-    // create a callback to handle form submit
-    // make it async by add async in from of term
-    onTermSubmit = async (term) => {
-        // console.log(term);
-        // await the response
-       const response = await youtube.get('/search', {
+    //5. cut a paste the onTermSubmit callback here, add const in front of onTermSubmit to make it a func, check n remove any "this."
+    const onTermSubmit = async(term) => {
+        const response = await youtube.get('/search', {
             params: {
                 q: term
             }
         });
-        // console log the response
-        console.log(response);
         // update the state
-        this.setState({ 
-            videos: response.data.items,
-            selectedVideo: response.data.items[0]
-         })
-        
+        // split the setState() into 2, one for setVideo response, one for setSelectedVideo response
+        // setState({
+        //     videos: response.data.items,
+        //     selectedVideo: response.data.items[0]
+        // })
+        setVideos(response.data.items);
+        setSelectedVideo(response.data.items[0]);
     };
-    // add a callback that will fire when the user clicks a video
-    onVideoSelect = (video) => {
-        // console.log('From the App', video);
-        // replace console log with a setState and pass it the selected video, then creare a new VideoDetail component
-        this.setState({ selectedVideo: video });
-    }
-
-    render() {
-        return (
-            // add the callback as props then go add it to SearchBar.js
-            <div> 
-                <SearchBar onFormSubmit={this.onTermSubmit} /> 
-                {/* to show the player and list side by side we need semantic ui built in grid */}
-                <div className="ui grid">
-                    <div className="ui row">
-                        {/* use semantic ui to show player on eleven colns */}
-                        <div className="eleven wide column">
-                            {/* show the video detail passing it video (not videos as we are passing a single video) */}
-                            <VideoDetail video={this.state.selectedVideo} />
-                        </div>
-                        {/* use semantic ui to show player on five colns */}
-                        <div className="five wide column">
-                            {/* I have {this.state.videos.length} videos replace this with the ff then go get the props in VideoList*/}
-                            {/* add a ref to the callback as a props */}
-                            <VideoList onVideoSelect={this.onVideoSelect} videos={ this.state.videos } />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-
+    //6 cut n paste the onVideoSelect callback here to fire when the user clicks a video
+    // add const in front of onVideoSelect
+    const onVideoSelect = (video) => {
+            // replace this line as ff and prodie it with the video we want to select
+            // this.setState({ selectedVideo: video });
+            setSelectedVideo(video);
+        }
+        // 7. cut the entire return() part of render(), past here
+    return (
+        // add the callback as props then go add it to SearchBar.js
+        <div>
+            <SearchBar onFormSubmit = { onTermSubmit } />  
+             
+            <div className = "ui grid">
+                <div className = "ui row"> 
+                   
+                    <div className = "eleven wide column"> 
+                        
+                        <VideoDetail video = { selectedVideo } />  
+                    </div> 
+                    
+                    <div className = "five wide column" > 
+                        
+                        <VideoList 
+                        onVideoSelect = { onVideoSelect } 
+                        videos = { videos } /> 
+                    </div> 
+                </div> 
+            </div > 
+        </div>
+    );
+};
 
 export default App;
