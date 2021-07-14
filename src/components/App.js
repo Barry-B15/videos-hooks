@@ -2,20 +2,29 @@ import React, { useState, useEffect } from 'react'
 import SearchBar from './SearchBar'
 import VideoList from './VideoList'
 import VideoDetail from './VideoDetail'
-import youtube from '../apis/youtube'
+import useVideos from '../hooks/useVideos'
 
 
 
 const App = () => {
     const [selectedVideo, setSelectedVideo] = useState(null);
 
+    // destructure and call the custom hook using same syntax as use state
+    const [videos, search] = useVideos('beautiful japan');
+
+    // to select the 1st video in the list use useEffect and pass videos as an arg to the array [videos]
+    useEffect(() => {
+        setSelectedVideo(videos[0]); // select the 1st video in list of videos
+    }, [videos]);
 //setSelectedVideo(response.data.items[0]);
+// this was how we selected b4 in onTermSubmit
     
         
     return (
         
         <div>
-            <SearchBar onFormSubmit = { onTermSubmit } />  
+            {/* update onTermSubmit to 'search', we chnaged this name in the hook */}
+            <SearchBar onFormSubmit = { search } />  
              
             <div className = "ui grid">
                 <div className = "ui row"> 
@@ -27,12 +36,6 @@ const App = () => {
                     
                     <div className = "five wide column"> 
                         <VideoList 
-                        //1. rather than provide a separate func, we should make it an inline func
-                        // onVideoSelect = { onVideoSelect } 
-                        // onVideoSelect = {(video) => setSelectedVideo(video) }
-
-                        //2. again notice that we are providing one agr (video) and providing the same arg to setSelectedVideo(video) in our func. Anytime we set something like this in the same order it is a sign that we should do a little refactor
-                        // we can simply replace this func with this. It is 100% equiv to what we had b4
                             onVideoSelect={setSelectedVideo}
                             videos={videos} 
                         /> 
